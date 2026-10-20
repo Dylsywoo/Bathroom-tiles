@@ -55,6 +55,7 @@ function ps(n,h,p,i,c,z){return{n:n,p:p,s:"Porcelain Superstore",u:PSL+h,i:PS+i+
 function tm(n,slug,p,i,c,z,note){return{n:n,p:p,s:"Tile Mountain",u:TM+slug,i:i,c:c,z:z,note:note}}
 function tmx(n,q,c){return{n:n,p:null,s:"Tile Mountain",u:TM+"catalogsearch/result/?q="+encodeURIComponent(q),c:c,search:true}}
 function oth(n,s,c,z){return{n:n,p:null,s:s,u:null,c:c,z:z}}
+function nw0(n,s,u,p,i,c,z,note){return{n:n,p:p,s:s,u:u,i:i,c:c,z:z,note:note}}
 function nw(n,s,u,p,i,c,z,note){return{n:n,p:p,s:s,u:u,i:i,c:c,z:z,note:note,nw:true}}
 var CATS=[
 ["Blue and aqua wall tiles",[
@@ -67,11 +68,11 @@ var CATS=[
  tm("Luma Sky Blue Gloss Wall Tile","luma-sky-blue-gloss-ceramic-wall-tile",39.95,TMI+"l/u/luma-sky-blue-gloss-ceramic-wall-tile-bathroom-2300.jpg","#9ec7e0","20 x 6.5 cm"),
  tm("Linear Navy Blue Gloss Wall Tile","linear-navy-blue-gloss-wall-tile",21.95,TMI+"l/i/linear-navy-blue-gloss-wall-tiles-bathroom-wall-2300-3.jpg","#1f3558","30 x 10 cm"),
  tm("Linear Gloss Blue Metro Wall Tile","linear-gloss-wall-blue-metro-tiles",21.95,TMI+"l/i/linear_blue.jpg","#3c6fa8","30 x 10 cm"),
- tmx("Massimo Blue Brick Effect Wall Tile","Massimo Blue brick effect","#4b78a8"),
- tmx("Ponto Blue Stone Effect Gloss Wall Tile","Ponto Blue stone effect","#5c86a6"),
- oth("Montblanc Blue","tile.co.uk","#3a6aa5","20 x 60 cm"),
- oth("Nissel Blue Brick","tile.co.uk","#3f6c9a","7.5 x 30 cm"),
- oth("Zellige Blue","tile.co.uk","#2f77a3","6.9 x 24 cm"),
+ tm("Massimo Blue Brick Effect Wall Tile","massimo-blue-brick-effect-matt-ceramic-wall-tile",39.99,TMI+"m/a/massimo-blue-brick-effect-matt-ceramic-wall-tile-bathroom-wall-2300-1.jpg","#4b78a8","40 x 5 cm"),
+ tm("Ponto Blue Stone Effect Gloss Wall Tile","ponto-blue-stone-effect-gloss-ceramic-wall-tile",18.99,TMI+"l/i/lin-ponto-blue-316x600_03_1.jpg","#5c86a6","60 x 31.6 cm"),
+ nw0("Montblanc Blue","MKM (tile.co.uk)","https://mkm.com/product/montblanc-blue-wall-tile-20x60cm-200x600mm-l048450",null,"https://cdn11.bigcommerce.com/s-l4y5j8tpyi/products/12567/images/109258/montblanc-blue-wall-tile-20x60cm-l048450-1__00774.1751502890.1280.1280.jpg?c=1","#3a6aa5","20 x 60 cm","Price needs a trade login. Link is the MKM listing."),
+ nw0("Nissel Blue Brick","MKM (tile.co.uk)","https://mkm.com/product/nissel-blue-brick-tile-75x30cm-ceramic-wall-tile-l041534",null,"https://cdn11.bigcommerce.com/s-l4y5j8tpyi/products/28836/images/103503/nissel-blue-tile-75x30cm-l041534-1__89040.1745541519.1280.1280.jpg?c=1","#3f6c9a","7.5 x 30 cm","Price needs a trade login. Link is the MKM listing."),
+ nw0("Zellige Blue Brick Tile","tile.co.uk","https://tile.co.uk/products/zellige-blue-brick-tiles-6-9x24cm",44.01,"https://cdn.shopify.com/s/files/1/0348/7426/1642/files/Zellige-Blue-Brick-bathroom-Tile_b60b37ad-d68c-4fc2-a87b-e002409f26e0.jpg?v=1759908034&width=500","#2f77a3","6.9 x 24 cm","Collection page price. Product page shows £32.78."),
  nw("Metal Work Verdigris","Baked Tiles","https://www.bakedtiles.co.uk/collections/blue/products/curated-metal-work-verdigris-60cm-x-60cm",null,"https://cdn.shopify.com/s/files/1/0761/8649/files/Metal-Work-Verdigris-60cm-x-60cm_edc13a31.webp?v=1772083752&width=500","#5f9a8f","60 x 60 cm","£123.84 per box. m² per box not stated."),
  nw("Verbania Glossy Waved Petrol Wall Tile","Mosafil","https://mosafil.co.uk/wall-tiles-verbania-glossy-waved-petrol-20x20cm.html",30.22,"https://mosafil.co.uk/media/da/fd/05/1715695143/wandfliesen-verbania-gewellt-verbania-petrol-01-jpg-b53f.webp?ts=1715695143","#2f5f73","20 x 20 cm"),
  nw("Raku Square Teal Rustic Gloss Wall Tile","Walls and Floors","https://www.wallsandfloors.co.uk/raku-square-teal-rustic-gloss-wall-tiles",38.36,"https://m2.wallsandfloors.co.uk/media/catalog/product/cache/f8158826193ba5faa8b862a9bd1eb9e9/t/r/tradition-green-square-tile-4.jpg","#3f8a8c","40 x 20 cm","Sale price. Shop lists 40 x 40 cm in places."),
