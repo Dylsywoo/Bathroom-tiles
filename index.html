@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tile samples</title>
+<style>
+:root{--bg:#f6f3ee;--card:#fff;--fg:#1f1d1a;--muted:#6b665e;--line:#e2ddd3;--accent:#8a3b1f;--sw:#d9d2c5}
+@media (prefers-color-scheme:dark){:root{--bg:#1a1816;--card:#25221f;--fg:#f1ece3;--muted:#a69f93;--line:#3a3631;--accent:#e59a76;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.45 Georgia,"Times New Roman",serif;padding:24px max(16px,env(safe-area-inset-right,0px)) 64px max(16px,env(safe-area-inset-left,0px))}
+.wrap{max-width:1200px;margin:0 auto}
+h1{font-size:1.9rem;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 16px;font-family:system-ui,sans-serif;font-size:.9rem}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 32px;font-family:system-ui,sans-serif;font-size:.85rem}
+nav a{padding:6px 12px;border:1px solid var(--line);border-radius:999px;color:var(--fg);text-decoration:none;background:var(--card)}
+nav a:hover,nav a:focus-visible{border-color:var(--accent);outline:none}
+nav span{color:var(--muted);margin-left:4px}
+section{margin:0 0 44px}
+h2{font-size:1.3rem;margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.img{aspect-ratio:1/1;background:var(--sw);position:relative}
+.img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.body{padding:12px;display:flex;flex-direction:column;gap:4px;font-family:system-ui,sans-serif;flex:1}
+.name{font-family:Georgia,serif;font-size:1rem;font-weight:700;line-height:1.25}
+.size{font-size:.85rem;font-weight:600}
+.card.new{border:3px solid #d0201b}
+.key{display:inline-block;width:14px;height:14px;border:3px solid #d0201b;border-radius:3px;vertical-align:-2px;margin-right:6px}
+.price{font-size:1.15rem;font-weight:700;color:var(--accent)}
+.price small{font-weight:400;color:var(--muted);font-size:.8rem}
+.shop{color:var(--muted);font-size:.85rem}
+.note{color:var(--muted);font-size:.78rem}
+a.go{margin-top:auto;padding-top:8px;color:var(--accent);font-size:.9rem;font-weight:600;text-decoration:none}
+a.go:hover,a.go:focus-visible{text-decoration:underline;outline:none}
+a.card-link{color:inherit;text-decoration:none;display:contents}
+.foot{color:var(--muted);font-family:system-ui,sans-serif;font-size:.8rem;margin-top:24px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Tile samples</h1>
+<p class="sub">Emailed sample orders 13 to 20 October 2026, plus Bathroom project saves. Prices are per m² as seen on 20 October 2026.</p>
+<p class="sub"><span class="key"></span>Red border: from your Bathroom project, not in the emailed sample orders.</p>
+<nav id="nav" aria-label="Categories"></nav>
+<main id="main"></main>
+<p class="foot">Some Tile Mountain photos are room shots, not close-ups. Items marked "link not found" had no product page I could reach.</p>
+</div>
+<script>
+var PS="https://cdn.shopify.com/s/files/1/0518/0601/1582/";
+var PSL="https://www.porcelainsuperstore.co.uk/products/";
+var TM="https://www.tilemountain.co.uk/";
+var TMI="https://m2.tilemountain.co.uk/media/catalog/product/cache/f8158826193ba5faa8b862a9bd1eb9e9/";
+function ps(n,h,p,i,c,z){return{n:n,p:p,s:"Porcelain Superstore",u:PSL+h,i:PS+i+"&width=500",c:c,z:z}}
+function tm(n,slug,p,i,c,z,note){return{n:n,p:p,s:"Tile Mountain",u:TM+slug,i:i,c:c,z:z,note:note}}
+function tmx(n,q,c){return{n:n,p:null,s:"Tile Mountain",u:TM+"catalogsearch/result/?q="+encodeURIComponent(q),c:c,search:true}}
+function oth(n,s,c,z){return{n:n,p:null,s:s,u:null,c:c,z:z}}
+function nw(n,s,u,p,i,c,z,note){return{n:n,p:p,s:s,u:u,i:i,c:c,z:z,note:note,nw:true}}
+var CATS=[
+["Blue and aqua wall tiles",[
+ ps("Opal Marine Wall Tile","opal-marine",36.00,"products/ci-op-mar_1.jpg?v=1618236683","#3f7f9c","7.5 x 30 cm"),
+ ps("Myth Aqua Tile","myth-aqua-tile",39.95,"files/Myth-Aqua-08_f96210f9-7061-4dec-8989-aeb371a8fff3.jpg?v=1733419340","#7cc3c4","5 x 40 cm"),
+ ps("Moxie Turquoise Kit Kat Tiles","moxie-turquoise-kit-kat-tiles",52.00,"files/moxie-turquoise-kit-kat-tiles_p01.jpg?v=1781003920","#2fa3a6","35 x 35 cm sheet"),
+ ps("Dwell Azul Tile","dwell-azul",48.00,"products/dwell_azul.jpg?v=1767706367","#2e5f9a","6 x 24 cm"),
+ tm("Manacor Glacier Wall Tile","manacor-glacier-65x400mm",41.95,"https://m2.tilemountain.co.uk/media/catalog/650X650/4/5/454640_-_manacor_glacier_wall_tile.webp","#b9d6e3","6.5 x 40 cm"),
+ tm("Manacor Glacier Wall Tile","manacor-glacier-100x100mms",29.96,TMI+"m/a/manacor-glacier-100x100mm-kitchen-wall-roomset-2300-edit_1.jpg","#b9d6e3","10 x 10 cm","Sale price"),
+ tm("Luma Sky Blue Gloss Wall Tile","luma-sky-blue-gloss-ceramic-wall-tile",39.95,TMI+"l/u/luma-sky-blue-gloss-ceramic-wall-tile-bathroom-2300.jpg","#9ec7e0","20 x 6.5 cm"),
+ tm("Linear Navy Blue Gloss Wall Tile","linear-navy-blue-gloss-wall-tile",21.95,TMI+"l/i/linear-navy-blue-gloss-wall-tiles-bathroom-wall-2300-3.jpg","#1f3558","30 x 10 cm"),
+ tm("Linear Gloss Blue Metro Wall Tile","linear-gloss-wall-blue-metro-tiles",21.95,TMI+"l/i/linear_blue.jpg","#3c6fa8","30 x 10 cm"),
+ tmx("Massimo Blue Brick Effect Wall Tile","Massimo Blue brick effect","#4b78a8"),
+ tmx("Ponto Blue Stone Effect Gloss Wall Tile","Ponto Blue stone effect","#5c86a6"),
+ oth("Montblanc Blue","tile.co.uk","#3a6aa5","20 x 60 cm"),
+ oth("Nissel Blue Brick","tile.co.uk","#3f6c9a","7.5 x 30 cm"),
+ oth("Zellige Blue","tile.co.uk","#2f77a3","6.9 x 24 cm"),
+ nw("Metal Work Verdigris","Baked Tiles","https://www.bakedtiles.co.uk/collections/blue/products/curated-metal-work-verdigris-60cm-x-60cm",null,"https://cdn.shopify.com/s/files/1/0761/8649/files/Metal-Work-Verdigris-60cm-x-60cm_edc13a31.webp?v=1772083752&width=500","#5f9a8f","60 x 60 cm","£123.84 per box. m² per box not stated."),
+ nw("Verbania Glossy Waved Petrol Wall Tile","Mosafil","https://mosafil.co.uk/wall-tiles-verbania-glossy-waved-petrol-20x20cm.html",30.22,"https://mosafil.co.uk/media/da/fd/05/1715695143/wandfliesen-verbania-gewellt-verbania-petrol-01-jpg-b53f.webp?ts=1715695143","#2f5f73","20 x 20 cm"),
+ nw("Raku Square Teal Rustic Gloss Wall Tile","Walls and Floors","https://www.wallsandfloors.co.uk/raku-square-teal-rustic-gloss-wall-tiles",38.36,"https://m2.wallsandfloors.co.uk/media/catalog/product/cache/f8158826193ba5faa8b862a9bd1eb9e9/t/r/tradition-green-square-tile-4.jpg","#3f8a8c","40 x 20 cm","Sale price. Shop lists 40 x 40 cm in places."),
+ nw("Cuba Porcelain Indigo Field","Hyperion Tiles","https://www.hyperiontiles.co.uk/products/cuba-porcelain-indigo-field",null,"https://cdn.shopify.com/s/files/1/0619/6294/4706/files/cuba-porcelain-indigo-field-2220601.webp?v=1775655008&width=500","#27407a","20 x 20 cm","£79.20 per box. m² per box not stated."),
+ nw("Catania Blue Tile","Topps Tiles","https://www.toppstiles.co.uk/catania/catania-blue-tile",60.89,"https://www.toppstiles.co.uk/static/media/catalog/product/c/a/632042_catania-blue-tile_3.jpg","#2f6fa3","30 x 15 cm"),
+ nw("Australis Kit Kat Gloss Teal Wall Tile","Victorian Plumbing","https://www.victorianplumbing.co.uk/australis-kit-kat-gloss-teal-wall-tiles-150-x-300mm?preSelected=true&sku=AUS1530TEA",39.95,"https://images.victorianplumbing.co.uk/products/australis-kit-kat-gloss-teal-wall-tiles-150-x-300mm/mainimages/1aus1530tea-1.png","#2f8f94","15 x 30 cm")
+]],
+["Green wall tiles",[
+ tm("Artesano Moss Green Wall Tile","artesano-moss-green-6-5x20cm",34.95,TMI+"a/r/artesano-moss-green-wall-tiles-402400-4.jpg","#6f8456","6.5 x 20 cm"),
+ tm("Ponto Green Stone Effect Gloss Wall Tile","ponto-green-stone-effect-gloss-ceramic-wall-tile",18.99,TMI+"l/i/lin-ponto-green-316x600_02_1.jpg","#7e9a7a","31.6 x 60 cm"),
+ nw("Reminiscent Sea Green","Baked Tiles","https://www.bakedtiles.co.uk/collections/blue/products/reminiscent-15-cm-x-30-cm-sea-green",44.00,"https://cdn.shopify.com/s/files/1/0761/8649/files/Reminiscent-15-cm-x-30-cm-Sea-Green_0fd0a0ff.webp?v=1765343280&width=500","#6fa596","15 x 30 cm","£2.00 per tile, 22 tiles per m²."),
+ nw("Luca Jade B Tile","tile.co.uk","https://tile.co.uk/products/20x20cm-luca-jade-b-tile",37.00,"https://tile.co.uk/cdn/shop/products/MKM_Hull_142.jpg?v=1770627999","#4f8f7a","20 x 20 cm")
+]],
+["Patterned tiles",[
+ nw("Averley Sage Patterned Tile","Porcelain Superstore","https://www.porcelainsuperstore.co.uk/products/averley-sage-patterned-tile",54.00,"https://cdn.shopify.com/s/files/1/0518/0601/1582/files/Averley-Sage-10.jpg?v=1779982081&width=500","#9aa889","45 x 45 cm"),
+ nw("Semaphore Bounty","Claybrook Studio","https://www.claybrookstudio.co.uk/semaphore-bounty.html",39.00,"https://www.claybrookstudio.co.uk/media/catalog/product/cache/2c0cf28fa12c61126f9f3d8e82d4e903/s/e/semaphore-bounty-roomset_1.jpg","#5b7fa3","19.8 x 19.8 cm"),
+ nw("Zebra Blue and White Matt Striped Tile","Walls and Floors","https://www.wallsandfloors.co.uk/zebra-blue-and-white-matt-striped-wall-and-floor-tiles",33.95,"https://m2.wallsandfloors.co.uk/media/catalog/product/cache/f8158826193ba5faa8b862a9bd1eb9e9/z/e/zebra-navy-single-tile-2300-1.jpg","#3a5a8c","22.3 x 22.3 cm")
+]],
+["Terracotta and cotto floor tiles",[
+ ps("Locke Cotto Tile","locke-cotto",39.00,"products/Locke-Cotto-07.jpg?v=1718704828","#b86a45","32 x 62 cm"),
+ ps("Parador Cotto Tile","parador-cotto-tile",28.80,"files/Parador-Cotto-08.jpg?v=1786707184","#b8643f","60 x 60 cm"),
+ ps("Marlow Cotto Floor Tile","marlow-cotto-floor-tile",28.50,"files/Marlow-Cotto-11.jpg?v=1791468804","#c07a52","44 x 66 cm"),
+ tm("Dover Ivory Terracotta Effect Tile","dover-ivory-terracotta-effect-blue-matt-porcelain-tile",25.95,TMI+"a/m/amb_dover_arena_cobalt_cocina-copia.jpg","#d8c7a8","33 x 33 cm"),
+ tmx("Light Terracotta Effect Anti Slip Floor Tile","Light Terracotta effect anti slip","#cf9a76"),
+ nw("Casa Cotto Dark","Baked Tiles","https://www.bakedtiles.co.uk/collections/floor-tiles/products/casa-cotto-dark-36-x-36cm",55.04,"https://cdn.shopify.com/s/files/1/0761/8649/files/Casa-Cotto-Dark-36cm-x-36cm.webp?v=1771475570&width=500","#a9552e","36 x 36 cm","£6.88 per tile, 8 tiles per m²."),
+ nw("Ronda Cotto Tile","Porcelain Superstore","https://www.porcelainsuperstore.co.uk/products/ronda-cotto-tile",50.00,"https://cdn.shopify.com/s/files/1/0518/0601/1582/files/ronda-cotto-tile_p02.jpg?v=1781007841&width=500","#bd6e48","16.5 x 16.5 cm","£27.50 per box of 0.55 m²."),
+ nw("Terracotta Square Tile","Tiles Direct","https://www.tiles-direct.com/wall-tiles-c26/terracotta-look-tiles-c611/terracotta-square-30cm-x-30cm-9-7cm-x-9-7cm-mosaic-tile-p9310/s9305",null,null,"#b8643f","30 x 30 cm","Page would not load. Price and photo not found."),
+ nw("Seville Light Matt Terracotta Effect","Mandarin Stone","https://www.mandarinstone.com/product/seville-light-matt-terracotta-effect-porcelain/",40.77,"https://www.mandarinstone.com/app/uploads/2024/08/Seville-Light-Matt-Porcelain-2-scaled.jpg","#d0906a","22.5 x 22.5 cm","From price. Also 45 x 45 cm at £43.20."),
+ nw("Harbourstone Southwold","Claybrook Studio","https://www.claybrookstudio.co.uk/harbourstone-southwold-20-2x30-4.html",63.13,"https://www.claybrookstudio.co.uk/media/catalog/product/cache/2c0cf28fa12c61126f9f3d8e82d4e903/h/a/harbourstone-southwold-20x30-indoor.jpg","#b8714f","20.2 x 30.4 cm")
+]],
+["Wood effect floor tiles",[
+ tm("Aspen Natural Woven Wood Effect Tile","aspen-natural-woven-wood-effect-matt-porcelain-floor-tile",19.99,TMI+"a/s/aspen-natural-oak-wood-effect-matt-porcelain-floor-tile-living-room-floor-2300-1_1.jpg","#b9936a","60 x 60 cm"),
+ tm("Gironde Natural Oak Wood Effect Tile","gironde-natural-oak-wood-effect-matt-porcelain-floor-tile",15.95,TMI+"g/i/gironde-natural-oak-wood-effect-matt-porcelain-floor-tile-living-room-floor-2300-1.jpg","#b58f63","58.9 x 15.3 cm"),
+ tm("Timber Greige Wood Effect Tile","timber-greige-wood-effect-matt-porcelain-floor-tile",18.95,TMI+"t/i/timber-griege-wood-effect-matt-porcelain-floor-tile-hallway-floor-2300-1.jpg","#a89a88","60 x 20 cm"),
+ tm("SandWood Beige Oak Wood Effect Tile","sandwood-beige-oak-wood-effect-matt-porcelain-floor-tile",15.95,TMI+"s/a/sandwood-beige-oak-wood-effect-matt-porcelain-floor-tile-floor-2300-2.jpg","#cdb99a","59.8 x 18.5 cm"),
+ tmx("Volte Beech Woven Wood Effect Tile","Volte Beech woven","#d2b88f")
+]],
+["Stone, concrete and neutral floor tiles",[
+ ps("Osaka Sand Floor Tile","osaka-sand-floor-tile",48.00,"files/osaka-sand-floor-tile_p04.jpg?v=1781004882","#d6c9b2","90 x 90 cm"),
+ ps("Marlow Beige Floor Tile","marlow-beige-floor-tile",29.40,"files/marlow-beige-floor-tile_p51.jpg?v=1784807614","#d3c3a6","40 x 60 cm"),
+ ps("Petra Beige Floor Tile","petra-beige-floor-tile",39.00,"files/Petra-Beige-07.jpg?v=1726046843","#cdbd9f","40 x 60 cm"),
+ ps("Jerusalem Stone Floor Tile","jerusalem-stone-floor-tile",31.50,"files/Jerusalem-Stone-07.jpg?v=1789039631","#d9cdb4","60 x 90 cm"),
+ tm("Crassana Beige Concrete Effect Anti Slip Tile","crassana-beige-concrete-effect-anti-slip-porcelain-floor-tile",22.95,TMI+"c/r/crassana-beige-stone-effect-matt-porcelain-floor-tile-kitchen-floor-2300-1.jpg","#c9bda9","59.5 x 59.5 cm"),
+ tmx("Taxos Sand Stone Effect Tile","Taxos Sand stone effect","#d5c7a9")
+]],
+["Terrazzo",[
+ ps("Flecks White Terrazzo Tile","flecks-white",48.60,"files/flecks-white_p02.jpg?v=1780581552","#e8e3da","90 x 90 cm")
+]],
+["Claybrook",[
+ oth("Nebulae Jupiter","Claybrook","#a89a8c"),
+ oth("Porticato Cipria 6mm","Claybrook","#d9bfb2"),
+ oth("Alum Bay Coral","Claybrook","#d98f7c"),
+ oth("Scottsdale Valley","Claybrook","#b8a58a"),
+ oth("Millbrook Rosa","Claybrook","#d6a3a0"),
+ oth("Marmorino Paglia","Claybrook","#e0d1a8")
+]]
+];
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+var nav="",main="";
+CATS.forEach(function(cat,ci){
+ var id="c"+ci;
+ nav+='<a href="#'+id+'">'+esc(cat[0])+'<span>'+cat[1].length+'</span></a>';
+ main+='<section id="'+id+'"><h2>'+esc(cat[0])+'</h2><div class="grid">';
+ cat[1].forEach(function(t){
+  var img=t.i?'<img src="'+esc(t.i)+'" alt="'+esc(t.n)+'" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">':'';
+  var price=t.p!=null?'<div class="price">£'+t.p.toFixed(2)+' <small>per m²</small></div>':'<div class="price"><small>Price not found</small></div>';
+  var link=t.u?'<a class="go" href="'+esc(t.u)+'" target="_blank" rel="noopener">'+(t.search?'Search shop':'View on '+esc(t.s))+'</a>':'<span class="note">Link not found</span>';
+  var note=t.note?'<div class="note">'+esc(t.note)+'</div>':'';
+  var size=t.z?'<div class="size">'+esc(t.z)+'</div>':'';
+  if(!t.i&&!t.nw)note+='<div class="note">No photo found. Colour is approximate.</div>';
+  if(!t.i&&t.nw)note+='<div class="note">No photo found. Colour is approximate.</div>';
+  main+='<article class="card'+(t.nw?' new':'')+'"><div class="img" style="--sw:'+t.c+'">'+img+'</div><div class="body"><div class="name">'+esc(t.n)+'</div>'+size+price+'<div class="shop">'+esc(t.s)+'</div>'+note+link+'</div></article>';
+ });
+ main+='</div></section>';
+});
+document.getElementById("nav").innerHTML=nav;
+document.getElementById("main").innerHTML=main;
+</script>
+</body>
+</html>
