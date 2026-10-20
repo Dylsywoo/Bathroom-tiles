@@ -74,9 +74,11 @@ a.card-link{color:inherit;text-decoration:none;display:contents}
  <div class="slot" id="slotWall"><div class="th"></div><div><b>Wall tile</b><span>Choose from the cards</span></div></div>
  <div class="slot" id="slotFloor"><div class="th"></div><div><b>Floor tile</b><span>Choose from the cards</span></div></div>
  <button class="go" id="renderBtn" disabled>Render bathroom</button>
+ <button id="copyBtn" disabled>Copy prompt for Gemini app</button>
 </div>
 <div class="msg" id="msg">Add your Gemini key and a bathroom photo under Settings, then pick a wall and floor tile.</div>
 <div class="result" id="result"></div>
+<textarea id="ptext" rows="6" hidden style="width:100%;margin-top:8px;font:inherit;padding:6px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px"></textarea>
 <details id="settings"><summary>Settings</summary>
 <div class="set">
  <label>Gemini API key (kept in this browser only)<input type="password" id="key" autocomplete="off" placeholder="Paste key"></label>
@@ -221,7 +223,7 @@ $("findModels").onclick=function(){var key=ls("tile_key")||$("key").value.trim()
   $("mlist").innerHTML=ms.map(function(m){return '<option value="'+m+'">'}).join("");
   $("model").value=ms[0];ls("tile_model_v2",ms[0]);setMsg("Image models for your key: "+ms.join(", ")+". Using "+ms[0]+". Edit the Model box to use another.");
  }).catch(function(e){setMsg("Error: "+e.message,true)})};
-function ready(){var ok=sel.wall&&sel.floor;$("renderBtn").disabled=!ok;
+function ready(){var ok=sel.wall&&sel.floor;$("renderBtn").disabled=!ok;$("copyBtn").disabled=!ok;
  if(ok&&!ls("tile_key"))setMsg("Add your Gemini key under Settings.",true);
  else if(ok&&!photo)setMsg("Add a bathroom photo under Settings.",true);
  else if(ok)setMsg("Ready.")}
@@ -254,6 +256,12 @@ function prompt(layout,hasW,hasF){
  if(fs)p+="Each floor tile is "+fs.w+"cm by "+fs.h+"cm, so the 2m floor is about "+Math.round(200/fs.w)+" tiles wide. ";
  p+="Keep the bath panel, ceiling and walls otherwise unchanged. Photorealistic, same lighting and perspective as the original photo.";
  return p}
+
+$("copyBtn").onclick=function(){
+ var t="Attach three images in this order: 1) my bathroom photo, 2) the wall tile photo, 3) the floor tile photo.\n\n"+prompt($("layout").value,true,true);
+ var ta=$("ptext");ta.value=t;ta.hidden=false;ta.select();
+ var done=function(){setMsg("Prompt copied. Paste it into the Gemini app with your bathroom photo and the two tile photos.")};
+ try{navigator.clipboard.writeText(t).then(done,function(){setMsg("Select and copy the text below.")})}catch(e){setMsg("Select and copy the text below.")}};
 $("renderBtn").onclick=function(){
  var key=ls("tile_key"),model=($("model").value||"gemini-2.5-flash-image").trim();
  if(!key){setMsg("Add your Gemini key under Settings.",true);$("settings").open=true;return}
