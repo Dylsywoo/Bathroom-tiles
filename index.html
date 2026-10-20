@@ -34,6 +34,32 @@ h2{font-size:1.3rem;margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid v
 a.go{margin-top:auto;padding-top:8px;color:var(--accent);font-size:.9rem;font-weight:600;text-decoration:none}
 a.go:hover,a.go:focus-visible{text-decoration:underline;outline:none}
 a.card-link{color:inherit;text-decoration:none;display:contents}
+
+.designer{position:sticky;top:0;z-index:5;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px;margin:0 0 24px;font-family:system-ui,sans-serif;font-size:.9rem}
+.designer h2{font-size:1rem;margin:0 0 8px;padding:0;border:0;font-family:Georgia,serif}
+.drow{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.slot{display:flex;align-items:center;gap:8px;min-width:0;flex:1 1 200px;border:1px dashed var(--line);border-radius:6px;padding:6px}
+.slot .th{width:44px;height:44px;border-radius:4px;background:var(--sw,var(--line));flex:none;overflow:hidden}
+.slot .th img{width:100%;height:100%;object-fit:cover;display:block}
+.slot b{display:block}
+.slot span{color:var(--muted);font-size:.8rem}
+.designer button,.pick button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:6px;padding:6px 10px}
+.designer button:focus-visible,.pick button:focus-visible{outline:2px solid var(--accent)}
+.designer button.go{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700}
+.designer button:disabled{opacity:.5;cursor:not-allowed}
+.designer details{margin-top:10px}
+.designer summary{cursor:pointer;color:var(--muted)}
+.set{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:8px}
+.set label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--muted)}
+.set input,.set select{font:inherit;padding:6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);min-width:0}
+.msg{margin-top:8px;color:var(--muted)}
+.msg.err{color:#d0201b}
+.result{margin-top:10px}
+.result img{max-width:100%;border-radius:6px;display:block}
+.pick{display:flex;gap:6px;padding-top:8px}
+.pick button{flex:1;font-size:.8rem;padding:5px 6px}
+.pick button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.photo-prev{max-height:60px;border-radius:4px}
 .foot{color:var(--muted);font-family:system-ui,sans-serif;font-size:.8rem;margin-top:24px}
 </style>
 </head>
@@ -42,9 +68,28 @@ a.card-link{color:inherit;text-decoration:none;display:contents}
 <h1>Tile samples</h1>
 <p class="sub">Emailed sample orders 13 to 20 October 2026, plus Bathroom project saves. Prices are per m² as seen on 20 October 2026.</p>
 <p class="sub"><span class="key"></span>Red border: from your Bathroom project, not in the emailed sample orders.</p>
+<section class="designer" aria-label="Bathroom designer">
+<h2>Bathroom designer</h2>
+<div class="drow">
+ <div class="slot" id="slotWall"><div class="th"></div><div><b>Wall tile</b><span>Choose from the cards</span></div></div>
+ <div class="slot" id="slotFloor"><div class="th"></div><div><b>Floor tile</b><span>Choose from the cards</span></div></div>
+ <button class="go" id="renderBtn" disabled>Render bathroom</button>
+</div>
+<div class="msg" id="msg">Add your Gemini key and a bathroom photo under Settings, then pick a wall and floor tile.</div>
+<div class="result" id="result"></div>
+<details id="settings"><summary>Settings</summary>
+<div class="set">
+ <label>Gemini API key (kept in this browser only)<input type="password" id="key" autocomplete="off" placeholder="Paste key"></label>
+ <label>Model<input type="text" id="model" value="gemini-nano-banana-2.1"></label>
+ <label>Bathroom photo<input type="file" id="photo" accept="image/*"></label>
+ <label>Wall tile layout<select id="layout"><option value="horizontal">Long side horizontal</option><option value="vertical">Long side vertical</option></select></label>
+</div>
+<div class="msg"><img id="photoPrev" class="photo-prev" alt="" hidden></div>
+</details>
+</section>
 <nav id="nav" aria-label="Categories"></nav>
 <main id="main"></main>
-<p class="foot">Some Tile Mountain photos are room shots, not close-ups. Items marked "link not found" had no product page I could reach.</p>
+<p class="foot">Renders are AI approximations, not exact tile layouts. Some Tile Mountain photos are room shots, not close-ups. Items marked "link not found" had no product page I could reach.</p>
 </div>
 <script>
 var PS="https://cdn.shopify.com/s/files/1/0518/0601/1582/";
@@ -131,12 +176,13 @@ var CATS=[
 ]]
 ];
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
-var nav="",main="";
+var nav="",main="",ALL=[];
 CATS.forEach(function(cat,ci){
  var id="c"+ci;
  nav+='<a href="#'+id+'">'+esc(cat[0])+'<span>'+cat[1].length+'</span></a>';
  main+='<section id="'+id+'"><h2>'+esc(cat[0])+'</h2><div class="grid">';
  cat[1].forEach(function(t){
+  t.id=ALL.length;ALL.push(t);
   var img=t.i?'<img src="'+esc(t.i)+'" alt="'+esc(t.n)+'" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">':'';
   var price=t.p!=null?'<div class="price">£'+t.p.toFixed(2)+' <small>per m²</small></div>':'<div class="price"><small>Price not found</small></div>';
   var link=t.u?'<a class="go" href="'+esc(t.u)+'" target="_blank" rel="noopener">'+(t.search?'Search shop':'View on '+esc(t.s))+'</a>':'<span class="note">Link not found</span>';
@@ -144,12 +190,84 @@ CATS.forEach(function(cat,ci){
   var size=t.z?'<div class="size">'+esc(t.z)+'</div>':'';
   if(!t.i&&!t.nw)note+='<div class="note">No photo found. Colour is approximate.</div>';
   if(!t.i&&t.nw)note+='<div class="note">No photo found. Colour is approximate.</div>';
-  main+='<article class="card'+(t.nw?' new':'')+'"><div class="img" style="--sw:'+t.c+'">'+img+'</div><div class="body"><div class="name">'+esc(t.n)+'</div>'+size+price+'<div class="shop">'+esc(t.s)+'</div>'+note+link+'</div></article>';
+  main+='<article class="card'+(t.nw?' new':'')+'"><div class="img" style="--sw:'+t.c+'">'+img+'</div><div class="body"><div class="name">'+esc(t.n)+'</div>'+size+price+'<div class="shop">'+esc(t.s)+'</div>'+note+link+'<div class="pick"><button data-id="'+t.id+'" data-slot="wall">Use on wall</button><button data-id="'+t.id+'" data-slot="floor">Use on floor</button></div></div></article>';
  });
  main+='</div></section>';
 });
 document.getElementById("nav").innerHTML=nav;
 document.getElementById("main").innerHTML=main;
+
+(function(){
+var $=function(i){return document.getElementById(i)};
+var sel={wall:null,floor:null},photo=null;
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+$("key").value=ls("tile_key")||"";
+$("model").value=ls("tile_model")||$("model").value;
+$("layout").value=ls("tile_layout")||"horizontal";
+photo=ls("tile_photo");
+if(photo){$("photoPrev").src=photo;$("photoPrev").hidden=false}
+$("key").onchange=function(){ls("tile_key",this.value.trim())};
+$("model").onchange=function(){ls("tile_model",this.value.trim())};
+$("layout").onchange=function(){ls("tile_layout",this.value)};
+function setMsg(t,err){var m=$("msg");m.textContent=t;m.className="msg"+(err?" err":"")}
+function ready(){var ok=sel.wall&&sel.floor;$("renderBtn").disabled=!ok;
+ if(ok&&!ls("tile_key"))setMsg("Add your Gemini key under Settings.",true);
+ else if(ok&&!photo)setMsg("Add a bathroom photo under Settings.",true);
+ else if(ok)setMsg("Ready.")}
+function showSlot(slot){var t=sel[slot],el=$(slot==="wall"?"slotWall":"slotFloor");
+ el.innerHTML='<div class="th" style="--sw:'+t.c+'">'+(t.i?'<img src="'+t.i+'" alt="" referrerpolicy="no-referrer" onerror="this.remove()">':'')+'</div><div><b>'+(slot==="wall"?"Wall: ":"Floor: ")+t.n.replace(/</g,"&lt;")+'</b><span>'+(t.z||"size unknown")+'</span></div>'}
+document.getElementById("main").addEventListener("click",function(e){
+ var b=e.target.closest("button[data-id]");if(!b)return;
+ var t=ALL[+b.dataset.id],slot=b.dataset.slot;sel[slot]=t;showSlot(slot);
+ document.querySelectorAll('button[data-slot="'+slot+'"]').forEach(function(x){x.classList.toggle("on",x===b)});
+ ready();
+});
+function downscale(src,max,q){return new Promise(function(res,rej){var im=new Image();im.onload=function(){var r=Math.min(1,max/Math.max(im.width,im.height));var c=document.createElement("canvas");c.width=Math.round(im.width*r);c.height=Math.round(im.height*r);c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",q))};im.onerror=rej;im.src=src})}
+$("photo").onchange=function(){var f=this.files[0];if(!f)return;var u=URL.createObjectURL(f);
+ downscale(u,1280,.85).then(function(d){photo=d;ls("tile_photo",d);$("photoPrev").src=d;$("photoPrev").hidden=false;ready()}).catch(function(){setMsg("Could not read that photo.",true)})};
+function parseSize(z){var m=(z||"").match(/([\d.]+)\s*x\s*([\d.]+)/);if(!m)return null;var a=+m[1],b=+m[2];return{w:Math.max(a,b),h:Math.min(a,b)}}
+function refImage(t){if(!t.i)return Promise.resolve(null);
+ return fetch(t.i,{mode:"cors"}).then(function(r){if(!r.ok)throw 0;return r.blob()}).then(function(b){return downscale(URL.createObjectURL(b),768,.85)}).catch(function(){return null})}
+function prompt(layout,hasW,hasF){
+ var w=sel.wall,f=sel.floor,ws=parseSize(w.z),fs=parseSize(f.z);
+ var p="Edit the first image, a photo of my bathroom. Keep the camera angle, bath, shower screen, taps, toilet, sink, shelves, plants, door and lighting exactly as they are. Change only the tiles. ";
+ p+="Replace the white wall tiles with "+w.n+(w.z?" ("+w.z+" tiles)":"")+". ";
+ if(hasW)p+="The second image shows the wall tile: match its colour, gloss, texture and pattern. ";
+ else p+="The tile's approximate colour is "+w.c+". ";
+ p+="Replace the floor tiles with "+f.n+(f.z?" ("+f.z+" tiles)":"")+". ";
+ if(hasF)p+="The "+(hasW?"third":"second")+" image shows the floor tile: match its colour, texture and pattern. ";
+ else p+="The tile's approximate colour is "+f.c+". ";
+ p+="Real room dimensions: the floor is 2m by 2m, the back wall above the bath is 170cm wide, the height from the bath rim to the ceiling is 160cm and the full room height is 220cm. Draw every tile at true scale for these dimensions. ";
+ if(ws){var along=layout==="vertical"?ws.h:ws.w,up=layout==="vertical"?ws.w:ws.h;
+  p+="Each wall tile is "+ws.w+"cm by "+ws.h+"cm, laid with the long side "+(layout==="vertical"?"vertical":"horizontal")+" in a straight stacked grid with thin grout lines, so the back wall shows about "+Math.round(170/along)+" tiles across and about "+Math.round(160/up)+" rows from the bath rim to the ceiling. ";}
+ if(fs)p+="Each floor tile is "+fs.w+"cm by "+fs.h+"cm, so the 2m floor is about "+Math.round(200/fs.w)+" tiles wide. ";
+ p+="Keep the bath panel, ceiling and walls otherwise unchanged. Photorealistic, same lighting and perspective as the original photo.";
+ return p}
+$("renderBtn").onclick=function(){
+ var key=ls("tile_key"),model=($("model").value||"gemini-nano-banana-2.1").trim();
+ if(!key){setMsg("Add your Gemini key under Settings.",true);$("settings").open=true;return}
+ if(!photo){setMsg("Add a bathroom photo under Settings.",true);$("settings").open=true;return}
+ var btn=this;btn.disabled=true;setMsg("Rendering. This can take 20 to 60 seconds.");$("result").innerHTML="";
+ Promise.all([refImage(sel.wall),refImage(sel.floor)]).then(function(r){
+  var parts=[],hasW=!!r[0],hasF=!!r[1];
+  parts.push({text:prompt($("layout").value,hasW,hasF)});
+  parts.push({inline_data:{mime_type:"image/jpeg",data:photo.split(",")[1]}});
+  if(hasW)parts.push({inline_data:{mime_type:"image/jpeg",data:r[0].split(",")[1]}});
+  if(hasF)parts.push({inline_data:{mime_type:"image/jpeg",data:r[1].split(",")[1]}});
+  var note=(!hasW||!hasF)?" Tile photos could not be sent, so the render used the tile names, sizes and approximate colours.":"";
+  return fetch("https://generativelanguage.googleapis.com/v1/models/"+encodeURIComponent(model)+":generateContent",{method:"POST",headers:{"x-goog-api-key":key,"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:parts}]})})
+   .then(function(res){return res.json().then(function(j){return{ok:res.ok,j:j}})})
+   .then(function(o){
+    if(!o.ok)throw new Error((o.j.error&&o.j.error.message)||"Request failed");
+    var ps=(o.j.candidates&&o.j.candidates[0]&&o.j.candidates[0].content&&o.j.candidates[0].content.parts)||[];
+    var img=ps.find(function(p){return p.inlineData||p.inline_data});
+    if(!img){var tx=ps.map(function(p){return p.text||""}).join(" ").trim();throw new Error(tx||"No image came back. Try again.")}
+    var d=img.inlineData||img.inline_data,src="data:"+(d.mimeType||d.mime_type||"image/png")+";base64,"+d.data;
+    $("result").innerHTML='<img src="'+src+'" alt="Rendered bathroom">';
+    setMsg("Done."+note);
+   })}).catch(function(err){setMsg("Error: "+err.message,true)}).then(function(){btn.disabled=false});
+};
+})();
 </script>
 </body>
 </html>
