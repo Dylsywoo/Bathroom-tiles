@@ -80,7 +80,8 @@ a.card-link{color:inherit;text-decoration:none;display:contents}
 <details id="settings"><summary>Settings</summary>
 <div class="set">
  <label>Gemini API key (kept in this browser only)<input type="password" id="key" autocomplete="off" placeholder="Paste key"></label>
- <label>Model<input type="text" id="model" value="gemini-nano-banana-2.1"></label>
+ <label>Model <button type="button" id="findModels">Find image models</button><input type="text" id="model" list="mlist" value="gemini-2.5-flash-image"></label>
+ <datalist id="mlist"></datalist>
  <label>Bathroom photo<input type="file" id="photo" accept="image/*"></label>
  <label>Wall tile layout<select id="layout"><option value="horizontal">Long side horizontal</option><option value="vertical">Long side vertical</option></select></label>
 </div>
@@ -202,14 +203,24 @@ var $=function(i){return document.getElementById(i)};
 var sel={wall:null,floor:null},photo=null;
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
 $("key").value=ls("tile_key")||"";
-$("model").value=ls("tile_model")||$("model").value;
+$("model").value=ls("tile_model_v2")||$("model").value;
 $("layout").value=ls("tile_layout")||"horizontal";
 photo=ls("tile_photo");
 if(photo){$("photoPrev").src=photo;$("photoPrev").hidden=false}
 $("key").onchange=function(){ls("tile_key",this.value.trim())};
-$("model").onchange=function(){ls("tile_model",this.value.trim())};
+$("model").onchange=function(){ls("tile_model_v2",this.value.trim())};
 $("layout").onchange=function(){ls("tile_layout",this.value)};
 function setMsg(t,err){var m=$("msg");m.textContent=t;m.className="msg"+(err?" err":"")}
+
+$("findModels").onclick=function(){var key=ls("tile_key")||$("key").value.trim();if(!key){setMsg("Add your Gemini key first.",true);return}
+ setMsg("Looking up models...");
+ fetch("https://generativelanguage.googleapis.com/v1beta/models?pageSize=200",{headers:{"x-goog-api-key":key}}).then(function(r){return r.json()}).then(function(j){
+  if(j.error)throw new Error(j.error.message);
+  var ms=(j.models||[]).filter(function(m){return /image/i.test(m.name)&&(m.supportedGenerationMethods||[]).indexOf("generateContent")>-1}).map(function(m){return m.name.replace("models/","")});
+  if(!ms.length)throw new Error("No image models available to this key. Check billing in AI Studio.");
+  $("mlist").innerHTML=ms.map(function(m){return '<option value="'+m+'">'}).join("");
+  $("model").value=ms[0];ls("tile_model_v2",ms[0]);setMsg("Image models for your key: "+ms.join(", ")+". Using "+ms[0]+". Edit the Model box to use another.");
+ }).catch(function(e){setMsg("Error: "+e.message,true)})};
 function ready(){var ok=sel.wall&&sel.floor;$("renderBtn").disabled=!ok;
  if(ok&&!ls("tile_key"))setMsg("Add your Gemini key under Settings.",true);
  else if(ok&&!photo)setMsg("Add a bathroom photo under Settings.",true);
@@ -244,7 +255,7 @@ function prompt(layout,hasW,hasF){
  p+="Keep the bath panel, ceiling and walls otherwise unchanged. Photorealistic, same lighting and perspective as the original photo.";
  return p}
 $("renderBtn").onclick=function(){
- var key=ls("tile_key"),model=($("model").value||"gemini-nano-banana-2.1").trim();
+ var key=ls("tile_key"),model=($("model").value||"gemini-2.5-flash-image").trim();
  if(!key){setMsg("Add your Gemini key under Settings.",true);$("settings").open=true;return}
  if(!photo){setMsg("Add a bathroom photo under Settings.",true);$("settings").open=true;return}
  var btn=this;btn.disabled=true;setMsg("Rendering. This can take 20 to 60 seconds.");$("result").innerHTML="";
@@ -255,7 +266,7 @@ $("renderBtn").onclick=function(){
   if(hasW)parts.push({inline_data:{mime_type:"image/jpeg",data:r[0].split(",")[1]}});
   if(hasF)parts.push({inline_data:{mime_type:"image/jpeg",data:r[1].split(",")[1]}});
   var note=(!hasW||!hasF)?" Tile photos could not be sent, so the render used the tile names, sizes and approximate colours.":"";
-  return fetch("https://generativelanguage.googleapis.com/v1/models/"+encodeURIComponent(model)+":generateContent",{method:"POST",headers:{"x-goog-api-key":key,"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:parts}]})})
+  return fetch("https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(model)+":generateContent",{method:"POST",headers:{"x-goog-api-key":key,"Content-Type":"application/json"},body:JSON.stringify({contents:[{parts:parts}]})})
    .then(function(res){return res.json().then(function(j){return{ok:res.ok,j:j}})})
    .then(function(o){
     if(!o.ok)throw new Error((o.j.error&&o.j.error.message)||"Request failed");
