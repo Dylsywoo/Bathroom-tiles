@@ -18,6 +18,10 @@ nav a:hover,nav a:focus-visible{border-color:var(--accent);outline:none}
 nav span{color:var(--muted);margin-left:4px}
 section{margin:0 0 44px}
 h2{font-size:1.3rem;margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.h2row{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px;margin:0 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.h2row h2{margin:0;padding:0;border:0}
+.sortl{font-family:system-ui,sans-serif;font-size:.85rem;color:var(--muted)}
+.sortl select{font:inherit;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
 .img{aspect-ratio:1/1;background:var(--sw);position:relative}
@@ -90,7 +94,6 @@ a.card-link{color:inherit;text-decoration:none;display:contents}
 <div class="msg"><img id="photoPrev" class="photo-prev" alt="" hidden></div>
 </details>
 </section>
-<p class="sub"><label>Sort by size <select id="sort"><option value="cat">By category</option><option value="desc">Largest first</option><option value="asc">Smallest first</option></select></label></p>
 <nav id="nav" aria-label="Categories"></nav>
 <main id="main"></main>
 <p class="foot">Renders are AI approximations, not exact tile layouts. Some Tile Mountain photos are room shots, not close-ups. Items marked "link not found" had no product page I could reach.</p>
@@ -192,24 +195,24 @@ function card(t){
  if(!t.i)note+='<div class="note">No photo found. Colour is approximate.</div>';
  return '<article class="card'+(t.nw?' new':'')+'"><div class="img" style="--sw:'+t.c+'">'+img+'</div><div class="body"><div class="name">'+esc(t.n)+'</div>'+size+price+'<div class="shop">'+esc(t.s)+'</div>'+note+link+'<div class="pick"><button data-id="'+t.id+'" data-slot="wall">Use on wall</button><button data-id="'+t.id+'" data-slot="floor">Use on floor</button></div></div></article>';
 }
-function render(mode){
- var nav="",main="";
- if(mode==="cat"){
-  CATS.forEach(function(cat,ci){
-   nav+='<a href="#c'+ci+'">'+esc(cat[0])+'<span>'+cat[1].length+'</span></a>';
-   main+='<section id="c'+ci+'"><h2>'+esc(cat[0])+'</h2><div class="grid">'+cat[1].map(card).join("")+'</div></section>';
-  });
- }else{
-  var L=ALL.slice().sort(function(a,b){var x=area(a),y=area(b);
-   if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return -1;
-   return mode==="desc"?y-x:x-y});
-  main='<section><h2>'+(mode==="desc"?"Largest first":"Smallest first")+'</h2><div class="grid">'+L.map(card).join("")+'</div></section>';
- }
- document.getElementById("nav").innerHTML=nav;
- document.getElementById("main").innerHTML=main;
+function sorted(list,mode){
+ if(mode==="cat")return list;
+ return list.slice().sort(function(a,b){var x=area(a),y=area(b);
+  if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return -1;
+  return mode==="desc"?y-x:x-y});
 }
-document.getElementById("sort").onchange=function(){render(this.value)};
-render("cat");
+var nav="",main="";
+CATS.forEach(function(cat,ci){
+ nav+='<a href="#c'+ci+'">'+esc(cat[0])+'<span>'+cat[1].length+'</span></a>';
+ main+='<section id="c'+ci+'"><div class="h2row"><h2>'+esc(cat[0])+'</h2><label class="sortl">Size <select class="sortsel" data-cat="'+ci+'"><option value="cat">Default order</option><option value="desc">Largest first</option><option value="asc">Smallest first</option></select></label></div><div class="grid" id="g'+ci+'">'+cat[1].map(card).join("")+'</div></section>';
+});
+document.getElementById("nav").innerHTML=nav;
+document.getElementById("main").innerHTML=main;
+document.getElementById("main").addEventListener("change",function(e){
+ var sel=e.target.closest("select.sortsel");if(!sel)return;
+ var ci=+sel.dataset.cat;
+ document.getElementById("g"+ci).innerHTML=sorted(CATS[ci][1],sel.value).map(card).join("");
+});
 
 (function(){
 var $=function(i){return document.getElementById(i)};
