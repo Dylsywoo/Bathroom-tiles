@@ -90,6 +90,7 @@ a.card-link{color:inherit;text-decoration:none;display:contents}
 <div class="msg"><img id="photoPrev" class="photo-prev" alt="" hidden></div>
 </details>
 </section>
+<p class="sub"><label>Sort by size <select id="sort"><option value="cat">By category</option><option value="desc">Largest first</option><option value="asc">Smallest first</option></select></label></p>
 <nav id="nav" aria-label="Categories"></nav>
 <main id="main"></main>
 <p class="foot">Renders are AI approximations, not exact tile layouts. Some Tile Mountain photos are room shots, not close-ups. Items marked "link not found" had no product page I could reach.</p>
@@ -179,26 +180,36 @@ var CATS=[
 ]]
 ];
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
-var nav="",main="",ALL=[];
-CATS.forEach(function(cat,ci){
- var id="c"+ci;
- nav+='<a href="#'+id+'">'+esc(cat[0])+'<span>'+cat[1].length+'</span></a>';
- main+='<section id="'+id+'"><h2>'+esc(cat[0])+'</h2><div class="grid">';
- cat[1].forEach(function(t){
-  t.id=ALL.length;ALL.push(t);
-  var img=t.i?'<img src="'+esc(t.i)+'" alt="'+esc(t.n)+'" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">':'';
-  var price=t.p!=null?'<div class="price">£'+t.p.toFixed(2)+' <small>per m²</small></div>':'<div class="price"><small>Price not found</small></div>';
-  var link=t.u?'<a class="go" href="'+esc(t.u)+'" target="_blank" rel="noopener">'+(t.search?'Search shop':'View on '+esc(t.s))+'</a>':'<span class="note">Link not found</span>';
-  var note=t.note?'<div class="note">'+esc(t.note)+'</div>':'';
-  var size=t.z?'<div class="size">'+esc(t.z)+'</div>':'';
-  if(!t.i&&!t.nw)note+='<div class="note">No photo found. Colour is approximate.</div>';
-  if(!t.i&&t.nw)note+='<div class="note">No photo found. Colour is approximate.</div>';
-  main+='<article class="card'+(t.nw?' new':'')+'"><div class="img" style="--sw:'+t.c+'">'+img+'</div><div class="body"><div class="name">'+esc(t.n)+'</div>'+size+price+'<div class="shop">'+esc(t.s)+'</div>'+note+link+'<div class="pick"><button data-id="'+t.id+'" data-slot="wall">Use on wall</button><button data-id="'+t.id+'" data-slot="floor">Use on floor</button></div></div></article>';
- });
- main+='</div></section>';
-});
-document.getElementById("nav").innerHTML=nav;
-document.getElementById("main").innerHTML=main;
+var ALL=[];
+CATS.forEach(function(c){c[1].forEach(function(t){t.id=ALL.length;ALL.push(t)})});
+function area(t){if(!t.z||/sheet/i.test(t.z))return null;var m=t.z.match(/([\d.]+)\s*x\s*([\d.]+)/);return m?+m[1]*+m[2]:null}
+function card(t){
+ var img=t.i?'<img src="'+esc(t.i)+'" alt="'+esc(t.n)+'" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">':'';
+ var price=t.p!=null?'<div class="price">£'+t.p.toFixed(2)+' <small>per m²</small></div>':'<div class="price"><small>Price not found</small></div>';
+ var link=t.u?'<a class="go" href="'+esc(t.u)+'" target="_blank" rel="noopener">'+(t.search?'Search shop':'View on '+esc(t.s))+'</a>':'<span class="note">Link not found</span>';
+ var note=t.note?'<div class="note">'+esc(t.note)+'</div>':'';
+ var size=t.z?'<div class="size">'+esc(t.z)+'</div>':'';
+ if(!t.i)note+='<div class="note">No photo found. Colour is approximate.</div>';
+ return '<article class="card'+(t.nw?' new':'')+'"><div class="img" style="--sw:'+t.c+'">'+img+'</div><div class="body"><div class="name">'+esc(t.n)+'</div>'+size+price+'<div class="shop">'+esc(t.s)+'</div>'+note+link+'<div class="pick"><button data-id="'+t.id+'" data-slot="wall">Use on wall</button><button data-id="'+t.id+'" data-slot="floor">Use on floor</button></div></div></article>';
+}
+function render(mode){
+ var nav="",main="";
+ if(mode==="cat"){
+  CATS.forEach(function(cat,ci){
+   nav+='<a href="#c'+ci+'">'+esc(cat[0])+'<span>'+cat[1].length+'</span></a>';
+   main+='<section id="c'+ci+'"><h2>'+esc(cat[0])+'</h2><div class="grid">'+cat[1].map(card).join("")+'</div></section>';
+  });
+ }else{
+  var L=ALL.slice().sort(function(a,b){var x=area(a),y=area(b);
+   if(x==null&&y==null)return 0;if(x==null)return 1;if(y==null)return -1;
+   return mode==="desc"?y-x:x-y});
+  main='<section><h2>'+(mode==="desc"?"Largest first":"Smallest first")+'</h2><div class="grid">'+L.map(card).join("")+'</div></section>';
+ }
+ document.getElementById("nav").innerHTML=nav;
+ document.getElementById("main").innerHTML=main;
+}
+document.getElementById("sort").onchange=function(){render(this.value)};
+render("cat");
 
 (function(){
 var $=function(i){return document.getElementById(i)};
